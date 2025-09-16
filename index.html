@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CS50 Woche 9: Flask Cheatsheet</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-print-color-adjust: exact;
+            print-color-adjust: exact;
+        }
+        /* Container for code blocks */
+        pre.code-block {
+            border-radius: 0.5rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+            margin: 0;
+        }
+        /* highlight.js styles override */
+        pre.code-block code.hljs {
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .code-inline {
+            background-color: #e2e8f0;
+            color: #1e293b;
+            padding: 0.2rem 0.4rem;
+            border-radius: 0.25rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.9em;
+        }
+        h1, h2, h3 {
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+        .section-card {
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.75rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        @media print {
+            body {
+                font-size: 10pt;
+            }
+            .section-card {
+                border: 1px solid #ccc;
+                padding: 1.5rem;
+                break-inside: avoid;
+            }
+            pre.code-block code.hljs {
+                 background-color: #1e293b !important;
+                 color: #e2e8f0 !important;
+            }
+             .code-inline {
+                background-color: #e2e8f0 !important;
+                color: #1e293b !important;
+            }
+            .no-print {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800">
+
+    <div class="container mx-auto max-w-4xl p-4 sm:p-8">
+
+        <header class="text-center mb-12">
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-900">CS50 Woche 9: Flask</h1>
+            <p class="text-lg text-gray-600 mt-2">Ein umfassendes Cheatsheet</p>
+        </header>
+        
+        <div class="p-6 bg-blue-100 border border-blue-200 text-blue-800 rounded-lg mb-12 no-print">
+            <strong>Tipp:</strong> Um dieses Dokument als PDF zu speichern, klicken Sie auf "Preview", öffnen Sie dann das Druckmenü Ihres Browsers (Strg+P oder Cmd+P) und wählen Sie "Als PDF speichern".
+        </div>
+
+
+        <!-- 1. Flask Grundlagen -->
+        <section class="section-card">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">1. Flask Grundlagen</h2>
+            <p class="mb-4">Flask ist ein minimalistisches Web-Framework für Python. Es ist ideal, um schnell robuste und erweiterbare Webanwendungen zu erstellen.</p>
+            
+            <h3 class="text-xl font-semibold mb-2">Grundlegende App-Struktur</h3>
+            <p class="mb-4">Jede Flask-Anwendung benötigt eine Instanz der <code class="code-inline">Flask</code>-Klasse und mindestens eine "Route", um Anfragen zu bearbeiten.</p>
+            <pre class="code-block"><code class="language-python">from flask import Flask, render_template, request
+
+# App konfigurieren
+app = Flask(__name__)
+
+# Eine "Route" definieren, die auf die URL "/" reagiert
+@app.route("/")
+def index():
+    # Rendert die HTML-Datei aus dem 'templates'-Ordner
+    return render_template("index.html")</code></pre>
+            
+            <h3 class="text-xl font-semibold mt-6 mb-2">Wichtige Ordnerstruktur</h3>
+            <p>Flask erwartet eine bestimmte Organisation Ihrer Dateien:</p>
+            <pre class="code-block"><code class="language-bash">/meine_app
+|-- app.py              # Ihre Haupt-Python-Datei
+|-- /templates
+|   |-- index.html      # HTML-Dateien
+|   |-- layout.html
+|-- /static
+|   |-- styles.css      # CSS, JS, Bilder</code></pre>
+        </section>
+
+
+        <!-- 2. Templates mit Jinja -->
+        <section class="section-card">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">2. Templates mit Jinja</h2>
+            <p class="mb-4">Mit der Jinja2-Templating-Engine können Sie Python-ähnliche Logik direkt in Ihr HTML einbetten, um dynamische Seiten zu erstellen.</p>
+            
+            <h3 class="text-xl font-semibold mb-2">Spezielle Jinja-Syntax</h3>
+            <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><code class="code-inline">{{ ... }}</code>: Für <strong>Ausdrücke</strong>. Gibt den Wert einer Variable oder eines Ausdrucks aus. Z.B.: <code class="code-inline">&lt;h1&gt;Hallo, {{ name }}!&lt;/h1&gt;</code></li>
+                <li><code class="code-inline">{% ... %}</code>: Für <strong>Anweisungen</strong>. Wird für Logik wie Schleifen oder Bedingungen verwendet.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold mb-2">Beispiel: Schleife und Bedingung</h3>
+            <pre class="code-block"><code class="language-html">&lt;ul&gt;
+    {% for item in einkaufsliste %}
+        &lt;li&gt;{{ item }}&lt;/li&gt;
+    {% endfor %}
+&lt;/ul&gt;
+
+{% if user %}
+    &lt;p&gt;Willkommen, {{ user.name }}!&lt;/p&gt;
+{% else %}
+    &lt;p&gt;Bitte einloggen.&lt;/p&gt;
+{% endif %}</code></pre>
+
+            <h3 class="text-xl font-semibold mt-6 mb-2">Template-Vererbung (Layouts)</h3>
+            <p class="mb-4">Vermeiden Sie Code-Wiederholung, indem Sie ein Basis-Layout definieren und Blöcke in anderen Templates überschreiben.</p>
+            <pre class="code-block"><code class="language-html">&lt;!-- templates/layout.html --&gt;
+&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;&lt;title&gt;Meine App&lt;/title&gt;&lt;/head&gt;
+&lt;body&gt;
+    {% block body %}{% endblock %}
+&lt;/body&gt;
+&lt;/html&gt;
+
+&lt;!-- templates/index.html --&gt;
+{% extends "layout.html" %}
+
+{% block body %}
+    &lt;h1&gt;Das ist die Startseite!&lt;/h1&gt;
+{% endblock %}</code></pre>
+        </section>
+        
+        
+        <!-- 3. Formulare und Requests -->
+        <section class="section-card">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">3. Formulare und Anfragen</h2>
+            <p class="mb-4">Benutzereingaben werden typischerweise über HTML-Formulare gesammelt und mit GET- oder POST-Anfragen an den Server gesendet.</p>
+            
+            <h3 class="text-xl font-semibold mb-2">GET vs. POST</h3>
+             <ul class="list-disc list-inside space-y-2 mb-4">
+                <li><strong>GET</strong>: Fragt Daten vom Server an. Formulardaten sind in der URL sichtbar. Standardmethode.</li>
+                <li><strong>POST</strong>: Sendet Daten an den Server. Daten sind im "Body" der Anfrage versteckt. Sicherer für sensible Daten.</li>
+            </ul>
+
+            <h3 class="text-xl font-semibold mb-2">Daten verarbeiten</h3>
+            <p class="mb-4">Importieren Sie das <code class="code-inline">request</code>-Objekt, um auf Formulardaten zuzugreifen. Die Route muss die erlaubten Methoden definieren.</p>
+            <pre class="code-block"><code class="language-python">from flask import request, redirect
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        # Daten aus dem Formular holen (bei POST)
+        username = request.form.get("username")
+        # Weiterleiten nach Verarbeitung
+        return redirect("/") 
+    else:
+        # Formular bei GET-Anfrage anzeigen
+        return render_template("login.html")</code></pre>
+             <p class="mt-4">Verwenden Sie <code class="code-inline">request.form.get("name")</code> für POST-Daten und <code class="code-inline">request.args.get("name")</code> für URL-Parameter (GET).</p>
+        </section>
+        
+        
+        <!-- 4. Sessions -->
+        <section class="section-card">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">4. Sessions</h2>
+            <p class="mb-4">Sessions ermöglichen es, Informationen über mehrere Anfragen eines Benutzers hinweg zu speichern (z.B. wer eingeloggt ist). Sie basieren auf Cookies.</p>
+
+            <h3 class="text-xl font-semibold mb-2">Session konfigurieren und verwenden</h3>
+            <pre class="code-block"><code class="language-python">from flask import session
+from flask_session import Session
+
+# App konfigurieren, um dateisystembasierte Sessions zu nutzen
+app.config["SESSION_PERMANENT"] = False
+app.config["SESSION_TYPE"] = "filesystem"
+Session(app)
+
+@app.route("/login", methods=["POST"])
+def login():
+    # Nach erfolgreicher Anmeldung...
+    username = request.form.get("username")
+    session["user_id"] = username  # Wert in der Session speichern
+    return redirect("/")
+
+@app.route("/logout")
+def logout():
+    session.clear()  # Alle Daten aus der Session löschen
+    return redirect("/")</code></pre>
+             <p class="mt-4">In anderen Routen können Sie dann mit <code class="code-inline">if "user_id" in session:</code> überprüfen, ob ein Benutzer angemeldet ist.</p>
+        </section>
+
+
+        <!-- 5. Datenbanken -->
+        <section class="section-card">
+            <h2 class="text-2xl font-bold mb-4 border-b pb-2">5. Datenbanken mit CS50 SQL</h2>
+            <p class="mb-4">Die CS50-Bibliothek vereinfacht die Interaktion mit SQL-Datenbanken erheblich und schützt automatisch vor SQL-Injection.</p>
+
+            <h3 class="text-xl font-semibold mb-2">Beispiel: Abfragen und Einfügen</h3>
+            <pre class="code-block"><code class="language-python">from cs50 import SQL
+
+# Datenbankverbindung herstellen
+db = SQL("sqlite:///meinedatenbank.db")
+
+# DATEN LESEN (SELECT)
+# db.execute gibt eine Liste von Dictionaries zurück
+users = db.execute("SELECT * FROM users WHERE status = ?", "active")
+for user in users:
+    print(user["username"])
+
+# DATEN SCHREIBEN (INSERT)
+# WICHTIG: Immer Platzhalter (?) verwenden, um SQL-Injection zu verhindern!
+username = request.form.get("username")
+db.execute("INSERT INTO users (username) VALUES (?)", username)</code></pre>
+            <div class="mt-4 p-4 bg-yellow-100 border border-yellow-200 text-yellow-800 rounded-lg">
+                <strong>Sicherheitshinweis:</strong> Übergeben Sie niemals Benutzereingaben direkt via f-Strings an SQL-Queries. Nutzen Sie immer die Platzhalter-Syntax (<code class="code-inline">?</code> oder <code class="code-inline">:name</code>), die von <code class="code-inline">db.execute</code> bereitgestellt wird.
+            </div>
+        </section>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+    <script>hljs.highlightAll();</script>
+</body>
+</html>
+
